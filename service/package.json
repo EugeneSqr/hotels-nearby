@@ -1,0 +1,16 @@
+{
+  "name": "service",
+  "version": "1.0.0",
+  "description": "a service for providing data about hotels nearby",
+  "main": "index.js",
+  "dependencies": {
+    "restify": "^8.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "nodemon index.js 0.0.0.0 8081",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "eugenesqr",
+  "license": "GPL-3.0-or-later"
+}
