@@ -34,6 +34,10 @@
     "webpack-preprocessor-loader": "^1.1.0"
   },
   "dependencies": {
+    "cross-fetch": "^3.0.4",
+    "here-js-api": "^1.0.11",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "serve": "^11.2.0"
   }
 }
