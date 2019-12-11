@@ -1,0 +1,39 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "a web app displaying hotels nearby",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode production --env.ENV=production",
+    "start": "webpack-dev-server --mode development",
+    "startprod": "serve ./dist",
+    "lint": "eslint ./src --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "eugenesqr",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.0",
+    "eslint": "^6.2.2",
+    "eslint-config-google": "^0.13.0",
+    "eslint-loader": "^3.0.1",
+    "eslint-plugin-react": "^7.14.3",
+    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-root-plugin": "^0.10.0",
+    "less": "^3.9.0",
+    "less-loader": "^4.1.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.28.1",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14",
+    "webpack-preprocessor-loader": "^1.1.0"
+  },
+  "dependencies": {
+    "serve": "^11.2.0"
+  }
+}
