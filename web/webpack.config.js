@@ -24,18 +24,11 @@ module.exports = (env, argv) => {
         exclude: [/node_modules/],
         use: [
           'babel-loader',
+          'preprocess-loader',
           {
             loader: 'eslint-loader',
             options: {
               emitWarning: true,
-            },
-          },
-          {
-            loader: 'webpack-preprocessor-loader',
-            options: {
-              params: {
-                ENV: (env || {}).ENV,
-              },
             },
           },
         ]
