@@ -4,11 +4,11 @@
   "description": "a web app displaying hotels nearby",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "webpack --mode development",
     "start": "webpack-dev-server --mode development --host 0.0.0.0 --port 8080",
     "startprod": "serve ./dist",
     "lint": "eslint ./src --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage"
   },
   "author": "eugenesqr",
   "license": "GPL-3.0-or-later",
@@ -24,7 +24,7 @@
     "eslint-loader": "^3.0.1",
     "eslint-plugin-react": "^7.14.3",
     "html-webpack-plugin": "^3.2.0",
-    "html-webpack-root-plugin": "^0.10.0",
+    "jest": "^24.9.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "preprocess-loader": "^0.3.0",
@@ -36,7 +36,6 @@
   },
   "dependencies": {
     "cross-fetch": "^3.0.4",
-    "here-js-api": "^1.0.11",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "serve": "^11.2.0"

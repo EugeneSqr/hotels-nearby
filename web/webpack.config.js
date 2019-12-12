@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackRootPlugin = require('html-webpack-root-plugin');
 
 module.exports = (env, argv) => {
   const mode = argv.mode;
@@ -8,8 +7,7 @@ module.exports = (env, argv) => {
     devtool: mode === 'development' ? 'source-map' : undefined,
     entry: './src/index.js',
     plugins: [
-      new HtmlWebpackPlugin({title: 'Hotels nearby'}),
-      new HtmlWebpackRootPlugin()
+      new HtmlWebpackPlugin({title: 'Hotels nearby', template: './src/index.html'}),
     ],
     devServer: {
       contentBase: './dist'

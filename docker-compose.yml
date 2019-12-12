@@ -4,7 +4,8 @@ services:
   web:
     build: ./web
     environment:
-      - HERE_API_KEY
+      - HERE_JS_API_KEY
+      - HERE_REST_API_KEY
     volumes:
       - ./web:/usr/src/app
       - /usr/src/app/node_modules
