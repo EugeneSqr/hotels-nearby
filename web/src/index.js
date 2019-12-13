@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Map from './Map';
+import App from './App';
 import './styles.less';
 
 ReactDOM.render(
-  (<Map></Map>),
+  (<App></App>),
   document.getElementById('root'),
 );

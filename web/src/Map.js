@@ -1,10 +1,15 @@
 'use strict';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {getMapApiKey} from './apiKeys';
-import getCurrentLocation from './currentLocation';
+import toMapLocation from './mapLocation';
+import UserLocationMarker from './UserLocationMarker';
+import NearbyHotelMarkers from './NearbyHotelMarkers';
 
-export default function Map() {
-  let map;
+export default function Map({center}) {
+  if (!center) {
+    return null;
+  }
+
   const mapRef = React.createRef();
   const style = {
     position: 'absolute',
@@ -12,45 +17,79 @@ export default function Map() {
     height: '100%',
   };
 
-  useEffect(function() {
-    let resizeTimer;
-    const handleResize = function() {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function() {
-        map.getViewPort().resize();
-      }, 300);
-    };
-    window.addEventListener('resize', handleResize);
+  const map = useMap();
+  const location = useLocation();
+  useWindowSize();
 
-    return function() {
-      window.removeEventListener('resize', handleResize);
-    };
-  });
+  return (
+    <div ref={mapRef} style={style}>
+      <UserLocationMarker location={location} map={map} />
+      <NearbyHotelMarkers userLocation={location} map={map} />
+    </div>
+  );
 
-  useEffect(function() {
-    getCurrentLocation().then(function(currentLocation) {
-      map = drawMap(mapRef.current, currentLocation);
+  function useMap() {
+    const [map, setMap] = useState();
+    useEffect(function() {
+      if (!map && center) {
+        const defaultZoomLevel = 10;
+        const platform = new window.H.service.Platform({
+          'apikey': getMapApiKey(),
+        });
+        const defaultLayers= platform.createDefaultLayers();
+        const newMap = new window.H.Map(
+          mapRef.current,
+          defaultLayers.vector.normal.map, {
+            zoom: defaultZoomLevel,
+            center: toMapLocation(center),
+          });
+        enableMapEvents(newMap);
+        setMap(newMap);
+      }
     });
-  });
 
-  return (<div ref={mapRef} style={style}></div>);
+    return map;
+  }
+
+  function useLocation() {
+    const [location, setLocation] = useState({...center});
+    useEffect(function() {
+      if (map && location) {
+        const handleTap = function(evt) {
+          const coord = map.screenToGeo(
+            evt.currentPointer.viewportX,
+            evt.currentPointer.viewportY);
+          setLocation({
+            latitude: coord.lat,
+            longitude: coord.lng,
+          });
+        };
+        map.addEventListener('tap', handleTap);
+        return function() {
+          map.removeEventListener('tap', handleTap);
+        };
+      }
+    });
+
+    return location;
+  }
+
+  function useWindowSize() {
+    useEffect(function() {
+      const handleResize = function() {
+        if (map && map.getViewPort()) {
+          map.getViewPort().resize();
+        }
+      };
+      window.addEventListener('resize', handleResize);
+
+      return function() {
+        window.removeEventListener('resize', handleResize);
+      };
+    });
+  }
 }
 
-function drawMap(container, currentLocation) {
-  const defaultZoomLevel = 10;
-  const platform = new window.H.service.Platform({
-    'apikey': getMapApiKey(),
-  });
-  const defaultLayers= platform.createDefaultLayers();
-  const map = new window.H.Map(
-    container,
-    defaultLayers.vector.normal.map, {
-      zoom: defaultZoomLevel,
-      center: {
-        lng: currentLocation.longitude,
-        lat: currentLocation.latitude,
-      },
-    });
-  window.H.ui.UI.createDefault(map, defaultLayers);
-  return map;
+function enableMapEvents(map) {
+  new window.H.mapevents.Behavior(new window.H.mapevents.MapEvents(map));
 }
