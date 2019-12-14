@@ -128,12 +128,19 @@ describe('httpRequestHandlers', function() {
   });
 
   test(`resolves with list of hotels
-  when all parameters are good and repository succeeds`, function() {
+  when all parameters are rounded and repository succeeds`, function() {
     const expectedHotels = ['hotel1', 'hotel2', 'hotel3'];
-    getHotels.mockImplementation(function() {
+    const latitude = 33.123123
+    const longitude = 40.249931
+    const radius = 1000.423423423
+    getHotels.mockImplementation(function(lat, lng, r) {
+      expect(lat).toEqual(latitude.toFixed(4));
+      expect(lng).toEqual(longitude.toFixed(4));
+      expect(r).toEqual(parseInt(radius));
       return Promise.resolve(expectedHotels);
     });
-    return expect(handleGetHotels(buildHotelsRequest(0, 0, 100)))
+    const hotelRequest = buildHotelsRequest(latitude, longitude, radius);
+    return expect(handleGetHotels(hotelRequest))
       .resolves.toEqual(expectedHotels);
   });
 

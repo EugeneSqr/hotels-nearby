@@ -26,8 +26,13 @@ module.exports = {
         return reject(createError(400, 'Invalid radius'));
       }
 
+      /* 4 digits give us around 11 meters precision, which is enough. Same with
+       * the radius - we aren't actually interested in fractions of a meter.
+       * On the other hand, rounding the values increases cache hit rate */
       const getHotelsPromise = hotelRepository.getHotels(
-        latitude, longitude, radius);
+        roundCoordinate(latitude),
+        roundCoordinate(longitude),
+        parseInt(radius));
       return getHotelsPromise.then(function(hotels) {
         return resolve(hotels);
       }, function() {
@@ -64,4 +69,8 @@ function isRadiusValid(radius) {
 
 function isNumber(value) {
   return value !== null && !isNaN(value);
+}
+
+function roundCoordinate(value) {
+  return value.toFixed(4);
 }
