@@ -89,7 +89,19 @@ describe('httpRequestHandlers', function() {
   });
 
   test(`rejects with BadRequest 'Invalid radius' error
-  when radius is provided, but not a number`, function() {
+  when radius argument is missing`, function() {
+    return expect(handleGetHotels(buildHotelsRequest(0, 0)))
+      .rejects.toStrictEqual(new BadRequest('Invalid radius'));
+  });
+
+  test(`rejects with BadRequest 'Invalid radius' error
+  when radius argument is null`, function() {
+    return expect(handleGetHotels(buildHotelsRequest(0, 0, null)))
+      .rejects.toStrictEqual(new BadRequest('Invalid radius'));
+  });
+
+  test(`rejects with BadRequest 'Invalid radius' error
+  when radius is not a number`, function() {
     return expect(handleGetHotels(buildHotelsRequest(0, 0, 'a')))
       .rejects.toStrictEqual(new BadRequest('Invalid radius'));
   });
@@ -122,26 +134,6 @@ describe('httpRequestHandlers', function() {
       return Promise.resolve(expectedHotels);
     });
     return expect(handleGetHotels(buildHotelsRequest(0, 0, 100)))
-      .resolves.toEqual(expectedHotels);
-  });
-
-  test(`resolves with list of hotels
-  when radius isn't provided and repository succeeds`, function() {
-    const expectedHotels = ['hotel1', 'hotel2', 'hotel3'];
-    getHotels.mockImplementation(function() {
-      return Promise.resolve(expectedHotels);
-    });
-    return expect(handleGetHotels(buildHotelsRequest(0, 0)))
-      .resolves.toEqual(expectedHotels);
-  });
-
-  test(`resolves with list of hotels
-  when radius is null and repository succeeds`, function() {
-    const expectedHotels = ['hotel1', 'hotel2', 'hotel3'];
-    getHotels.mockImplementation(function() {
-      return Promise.resolve(expectedHotels);
-    });
-    return expect(handleGetHotels(buildHotelsRequest(0, 0, null)))
       .resolves.toEqual(expectedHotels);
   });
 

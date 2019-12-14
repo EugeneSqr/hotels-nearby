@@ -22,13 +22,12 @@ module.exports = {
         return reject(createError(400, 'Invalid longitude'));
       }
 
-      const radiusProvided = isRadiusProvided(radius);
-      if (radiusProvided && !isRadiusValid(radius)) {
+      if (!isRadiusValid(radius)) {
         return reject(createError(400, 'Invalid radius'));
       }
 
       const getHotelsPromise = hotelRepository.getHotels(
-        latitude, longitude, radiusProvided ? radius : undefined);
+        latitude, longitude, radius);
       return getHotelsPromise.then(function(hotels) {
         return resolve(hotels);
       }, function() {
@@ -61,10 +60,6 @@ function isRadiusValid(radius) {
   return isNumber(radius) &&
     radius > 50 &&
     radius <= 5000;
-}
-
-function isRadiusProvided(radius) {
-  return typeof radius !== 'undefined' && radius !== null;
 }
 
 function isNumber(value) {

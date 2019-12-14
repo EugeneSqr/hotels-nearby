@@ -49,7 +49,7 @@ useDocsMiddleware(app, '/api-docs');
  *           $ref: '#/definitions/longitude'
  *       - name: radius
  *         in: query
- *         required: false
+ *         required: true
  *         description: radius of the area to search
  *         schema:
  *           $ref: '#/definitions/radius'

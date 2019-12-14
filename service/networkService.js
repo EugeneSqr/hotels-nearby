@@ -1,7 +1,8 @@
 'use strict';
-const apiKey = require('./apiKeys')();
-const request = require('request-promise');
+const getRestApiKey = require('./apiKeys');
+const request = require('request-promise-native');
 const baseUrl = 'https://places.sit.ls.hereapi.com/places/v1';
+const defaultSize = 100;
 const hotelCategory = 'hotel';
 /**
  * Gets data from a remote geolocation service
@@ -18,10 +19,12 @@ module.exports = {
     const options = {
       uri: `${baseUrl}/browse`,
       qs: {
-        apiKey,
-        in: buildCircularIn(latitude, longitude, radius),
+        apiKey: getRestApiKey(),
+        in: buildIn(latitude, longitude, radius),
         cat: hotelCategory,
+        size: defaultSize,
       },
+      json: true,
     };
 
     return request(options);
@@ -30,10 +33,11 @@ module.exports = {
   /**
    * Gets details for specific hotel
    */
+  // TODO: implement me
   getHotelDetails: function(id) {
   },
 };
 
-function buildCircularIn(latitude, longitude, radius) {
+function buildIn(latitude, longitude, radius) {
   return `${latitude},${longitude};r=${radius}`;
 }

@@ -7,7 +7,7 @@
     "express": "^4.17.1",
     "http-errors": "^1.7.3",
     "request": "^2.88.0",
-    "request-promise": "^4.2.5",
+    "request-promise-native": "^1.0.8",
     "swagger-jsdoc": "^3.5.0",
     "swagger-ui-express": "^4.1.2"
   },
@@ -18,7 +18,7 @@
     "jest": "^24.9.0"
   },
   "scripts": {
-    "start": "nodemon index.js 0.0.0.0 8081 --delay 2.5",
+    "start": "nodemon --inspect index.js 0.0.0.0 8081 --delay 2.5",
     "test": "jest --coverage",
     "lint": "eslint ./*.js --fix"
   },
