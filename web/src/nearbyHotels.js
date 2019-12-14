@@ -2,14 +2,13 @@
 import fetch from 'cross-fetch';
 import {getHotelsNearbyServiceUrl} from './settings';
 
-const areaRadius = 2000;
-
 /**
  * Gets nearby hotels info
  * @param {{latitude: number, longitude: number}} userLocation
+ * @param {number} areaRadius
  * @return {Promise<Array<object>>}
  */
-export function getHotels(userLocation) {
+export function getHotels(userLocation, areaRadius) {
   const endpointUrl = `${getHotelsNearbyServiceUrl()}/hotels`;
   const queryString = `?latitude=${userLocation.latitude}&` +
     `longitude=${userLocation.longitude}&` +

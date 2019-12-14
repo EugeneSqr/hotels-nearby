@@ -32,7 +32,7 @@ export default function Map({center}) {
     const [map, setMap] = useState();
     useEffect(function() {
       if (!map && center) {
-        const defaultZoomLevel = 10;
+        const defaultZoomLevel = 15;
         const platform = new window.H.service.Platform({
           'apikey': getMapApiKey(),
         });
