@@ -16,7 +16,7 @@ describe('currentLocation', function() {
   test(`getUserLocation resolves with defaults
   when ip lookup fails`, function() {
     fetch.mockImplementation(function() {
-      return Promise.reject();
+      return Promise.reject(new Error());
     });
     return expect(getUserLocation()).resolves.toEqual(defaultLocation);
   });
@@ -25,7 +25,7 @@ describe('currentLocation', function() {
   when ip lookup succeeds, but status !== 200`, function() {
     fetch.mockImplementation(function() {
       return Promise.resolve({
-        status: 400
+        status: 400,
       });
     });
     return expect(getUserLocation()).resolves.toEqual(defaultLocation);
@@ -36,7 +36,7 @@ describe('currentLocation', function() {
     fetch.mockImplementation(function() {
       return Promise.resolve({
         status: 200,
-        json: jest.fn(() => Promise.reject()),
+        json: jest.fn(() => Promise.reject(new Error())),
       });
     });
     return expect(getUserLocation()).resolves.toEqual(defaultLocation);
@@ -58,7 +58,7 @@ describe('currentLocation', function() {
     fetch.mockImplementation(function() {
       return Promise.resolve({
         status: 200,
-        json: jest.fn(() => Promise.resolve({lat:50})),
+        json: jest.fn(() => Promise.resolve({lat: 50})),
       });
     });
     return expect(getUserLocation()).resolves.toEqual(defaultLocation);
