@@ -5,6 +5,7 @@ services:
     build: ./web
     environment:
       - HERE_JS_API_KEY
+      - HOTELS_NEARBY_SERVICE_URL=http://localhost:8081
     volumes:
       - ./web:/usr/src/app
       - /usr/src/app/node_modules

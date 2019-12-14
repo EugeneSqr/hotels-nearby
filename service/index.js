@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const useDocsMiddleware = require('./docsGenerator');
 const adaptPromiseHandler = require('./promiseHandlerAdapter');
@@ -8,6 +9,7 @@ const {
 
 const port = process.env.PORT || 8081;
 
+app.use(cors());
 useDocsMiddleware(app, '/api-docs');
 /**
  * @swagger

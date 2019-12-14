@@ -1,6 +1,6 @@
 'use strict';
 import React, {useEffect, useState} from 'react';
-import {getMapApiKey} from './apiKeys';
+import {getMapApiKey} from './settings';
 import toMapLocation from './mapLocation';
 import UserLocationMarker from './UserLocationMarker';
 import NearbyHotelMarkers from './NearbyHotelMarkers';

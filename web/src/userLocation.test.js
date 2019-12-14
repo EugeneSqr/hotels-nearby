@@ -1,7 +1,7 @@
 'use strict';
 jest.mock('cross-fetch');
 import fetch from 'cross-fetch';
-import getCurrentLocation from './currentLocation';
+import getUserLocation from './userLocation';
 
 describe('currentLocation', function() {
   const defaultLocation = {
@@ -13,25 +13,25 @@ describe('currentLocation', function() {
     fetch.mockReset();
   });
 
-  test(`getCurrentLocation resolves with defaults
+  test(`getUserLocation resolves with defaults
   when ip lookup fails`, function() {
     fetch.mockImplementation(function() {
       return Promise.reject();
     });
-    return expect(getCurrentLocation()).resolves.toEqual(defaultLocation);
+    return expect(getUserLocation()).resolves.toEqual(defaultLocation);
   });
 
-  test(`getCurrentLocation resolves with defaults
+  test(`getUserLocation resolves with defaults
   when ip lookup succeeds, but status !== 200`, function() {
     fetch.mockImplementation(function() {
       return Promise.resolve({
         status: 400
       });
     });
-    return expect(getCurrentLocation()).resolves.toEqual(defaultLocation);
+    return expect(getUserLocation()).resolves.toEqual(defaultLocation);
   });
 
-  test(`getCurrentLocation resolves with defaults
+  test(`getUserLocation resolves with defaults
   when ip lookup succeeds, but json payload is invalid`, function() {
     fetch.mockImplementation(function() {
       return Promise.resolve({
@@ -39,10 +39,10 @@ describe('currentLocation', function() {
         json: jest.fn(() => Promise.reject()),
       });
     });
-    return expect(getCurrentLocation()).resolves.toEqual(defaultLocation);
+    return expect(getUserLocation()).resolves.toEqual(defaultLocation);
   });
 
-  test(`getCurrentLocation resolves with defaults
+  test(`getUserLocation resolves with defaults
   when ip lookup succeeds, but location latitude is invalid`, function() {
     fetch.mockImplementation(function() {
       return Promise.resolve({
@@ -50,10 +50,10 @@ describe('currentLocation', function() {
         json: jest.fn(() => Promise.resolve({})),
       });
     });
-    return expect(getCurrentLocation()).resolves.toEqual(defaultLocation);
+    return expect(getUserLocation()).resolves.toEqual(defaultLocation);
   });
 
-  test(`getCurrentLocation resolves with defaults
+  test(`getUserLocation resolves with defaults
   when ip lookup succeeds, but location longitude is invalid`, function() {
     fetch.mockImplementation(function() {
       return Promise.resolve({
@@ -61,10 +61,10 @@ describe('currentLocation', function() {
         json: jest.fn(() => Promise.resolve({lat:50})),
       });
     });
-    return expect(getCurrentLocation()).resolves.toEqual(defaultLocation);
+    return expect(getUserLocation()).resolves.toEqual(defaultLocation);
   });
 
-  test(`getCurrentLocation resolves with retrieved
+  test(`getUserLocation resolves with retrieved
   latitude and longitude`, function() {
     const expectedLatitude = 50.50;
     const expectedLongitude = 40.40;
@@ -78,7 +78,7 @@ describe('currentLocation', function() {
         json: jest.fn(() => Promise.resolve(resolvedLocation)),
       });
     });
-    return expect(getCurrentLocation()).resolves.toEqual({
+    return expect(getUserLocation()).resolves.toEqual({
       latitude: expectedLatitude,
       longitude: expectedLongitude,
     });

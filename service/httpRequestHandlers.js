@@ -13,26 +13,24 @@ module.exports = {
    */
   handleGetHotels: function(request) {
     return new Promise(function(resolve, reject) {
-      const {latitude, longitude, radius} = (request || {}).query || {};
+      let {latitude, longitude, radius} = (request || {}).query || {};
+      latitude = parseFloat(latitude);
       if (!isLatitudeValid(latitude)) {
         return reject(createError(400, 'Invalid latitude'));
       }
 
+      longitude = parseFloat(longitude);
       if (!isLongitudeValid(longitude)) {
         return reject(createError(400, 'Invalid longitude'));
       }
 
+      radius = parseInt(radius);
       if (!isRadiusValid(radius)) {
         return reject(createError(400, 'Invalid radius'));
       }
 
-      /* 4 digits give us around 11 meters precision, which is enough. Same with
-       * the radius - we aren't actually interested in fractions of a meter.
-       * On the other hand, rounding the values increases cache hit rate */
       const getHotelsPromise = hotelRepository.getHotels(
-        roundCoordinate(latitude),
-        roundCoordinate(longitude),
-        parseInt(radius));
+        roundCoordinate(latitude), roundCoordinate(longitude), radius);
       return getHotelsPromise.then(function(hotels) {
         return resolve(hotels);
       }, function() {
@@ -45,32 +43,30 @@ module.exports = {
    * Handles hotel details request
    * @return {Promise}
    */
-  // handleGetHotelDetails: function(request) {
-  // },
+  handleGetHotelDetails: function(request) {
+  },
 };
 
 function isLatitudeValid(latitude) {
-  return isNumber(latitude) &&
+  return !isNaN(latitude) &&
     latitude >= -90 &&
     latitude <= 90;
 }
 
 function isLongitudeValid(longitude) {
-  return isNumber(longitude) &&
+  return !isNaN(longitude) &&
     longitude >= -180 &&
     longitude <= 180;
 }
 
 function isRadiusValid(radius) {
-  return isNumber(radius) &&
+  return !isNaN(radius) &&
     radius > 50 &&
     radius <= 5000;
 }
 
-function isNumber(value) {
-  return value !== null && !isNaN(value);
-}
-
 function roundCoordinate(value) {
-  return value.toFixed(4);
+  /* 4 digits give us around 11 meters precision, which is enough.
+   * On the other hand, rounding the values increases cache hit rate */
+  return Math.round((value + Number.EPSILON) * 10000 ) / 10000
 }

@@ -48,73 +48,73 @@ describe('httpRequestHandlers', function() {
 
   test(`rejects with BadRequest 'Invalid latitude' error
   when latitude argument is below -90`, function() {
-    return expect(handleGetHotels(buildHotelsRequest(-91)))
+    return expect(handleGetHotels(buildHotelsRequest('-91')))
       .rejects.toStrictEqual(new BadRequest('Invalid latitude'));
   });
 
   test(`rejects with BadRequest 'Invalid latitude' error
   when latitude argument is above 90`, function() {
-    return expect(handleGetHotels(buildHotelsRequest(91)))
+    return expect(handleGetHotels(buildHotelsRequest('91')))
       .rejects.toStrictEqual(new BadRequest('Invalid latitude'));
   });
 
   test(`rejects with BadRequest 'Invalid longitude' error
   when longitude argument is missing`, function() {
-    return expect(handleGetHotels(buildHotelsRequest(0)))
+    return expect(handleGetHotels(buildHotelsRequest('0')))
       .rejects.toStrictEqual(new BadRequest('Invalid longitude'));
   });
 
   test(`rejects with BadRequest 'Invalid longitude' error
   when longitude argument is null`, function() {
-    return expect(handleGetHotels(buildHotelsRequest(0, null)))
+    return expect(handleGetHotels(buildHotelsRequest('0', null)))
       .rejects.toStrictEqual(new BadRequest('Invalid longitude'));
   });
 
   test(`rejects with BadRequest 'Invalid longitude' error
   when longitude argument is not a number`, function() {
-    return expect(handleGetHotels(buildHotelsRequest(0, 'a')))
+    return expect(handleGetHotels(buildHotelsRequest('0', 'a')))
       .rejects.toStrictEqual(new BadRequest('Invalid longitude'));
   });
 
   test(`rejects with BadRequest 'Invalid longitude' error
   when longitude argument is below -180`, function() {
-    return expect(handleGetHotels(buildHotelsRequest(0, -181)))
+    return expect(handleGetHotels(buildHotelsRequest('0', '-181')))
       .rejects.toStrictEqual(new BadRequest('Invalid longitude'));
   });
 
   test(`rejects with BadRequest 'Invalid longitude' error
   when longitude argument is above 180`, function() {
-    return expect(handleGetHotels(buildHotelsRequest(0, 181)))
+    return expect(handleGetHotels(buildHotelsRequest('0', '181')))
       .rejects.toStrictEqual(new BadRequest('Invalid longitude'));
   });
 
   test(`rejects with BadRequest 'Invalid radius' error
   when radius argument is missing`, function() {
-    return expect(handleGetHotels(buildHotelsRequest(0, 0)))
+    return expect(handleGetHotels(buildHotelsRequest('0', '0')))
       .rejects.toStrictEqual(new BadRequest('Invalid radius'));
   });
 
   test(`rejects with BadRequest 'Invalid radius' error
   when radius argument is null`, function() {
-    return expect(handleGetHotels(buildHotelsRequest(0, 0, null)))
+    return expect(handleGetHotels(buildHotelsRequest('0', '0', null)))
       .rejects.toStrictEqual(new BadRequest('Invalid radius'));
   });
 
   test(`rejects with BadRequest 'Invalid radius' error
   when radius is not a number`, function() {
-    return expect(handleGetHotels(buildHotelsRequest(0, 0, 'a')))
+    return expect(handleGetHotels(buildHotelsRequest('0', '0', 'a')))
       .rejects.toStrictEqual(new BadRequest('Invalid radius'));
   });
 
   test(`rejects with BadRequest 'Invalid radius' error
   when radius is provided, but smaller than 0`, function() {
-    return expect(handleGetHotels(buildHotelsRequest(0, 0, -1)))
+    return expect(handleGetHotels(buildHotelsRequest('0', '0', '-1')))
       .rejects.toStrictEqual(new BadRequest('Invalid radius'));
   });
 
   test(`rejects with BadRequest 'Invalid radius' error
   when radius is provided, but larger than 5000`, function() {
-    return expect(handleGetHotels(buildHotelsRequest(0, 0, 5001)))
+    return expect(handleGetHotels(buildHotelsRequest('0', '0', '5001')))
       .rejects.toStrictEqual(new BadRequest('Invalid radius'));
   });
 
@@ -123,23 +123,21 @@ describe('httpRequestHandlers', function() {
     getHotels.mockImplementation(function() {
       return Promise.reject(new Error());
     });
-    return expect(handleGetHotels(buildHotelsRequest(0, 0, 100)))
+    return expect(handleGetHotels(buildHotelsRequest('0', '0', '100')))
       .rejects.toStrictEqual(new InternalServerError());
   });
 
   test(`resolves with list of hotels
   when all parameters are rounded and repository succeeds`, function() {
     const expectedHotels = ['hotel1', 'hotel2', 'hotel3'];
-    const latitude = 33.123123
-    const longitude = 40.249931
-    const radius = 1000.423423423
-    getHotels.mockImplementation(function(lat, lng, r) {
-      expect(lat).toEqual(latitude.toFixed(4));
-      expect(lng).toEqual(longitude.toFixed(4));
-      expect(r).toEqual(parseInt(radius));
+    getHotels.mockImplementation(function(latitude, longitude, radius) {
+      expect(latitude).toEqual(33.1231);
+      expect(longitude).toEqual(40.2499);
+      expect(radius).toEqual(1000);
       return Promise.resolve(expectedHotels);
     });
-    const hotelRequest = buildHotelsRequest(latitude, longitude, radius);
+    const hotelRequest = buildHotelsRequest(
+      '33.123123', '40.249931', '1000.423423423');
     return expect(handleGetHotels(hotelRequest))
       .resolves.toEqual(expectedHotels);
   });

@@ -6,10 +6,10 @@ const berlinLatitude = 52.51;
 const berlinLongitude = 13.4;
 
 /**
- * Gets current location of a user. Falls back to Berlin in case of an error.
- * @return {Promise<{latitude: number, longitude: number}>} location of a user
+ * Gets current user location. Falls back to Berlin in case of an error.
+ * @return {Promise<{latitude: number, longitude: number}>}
  */
-export default function getCurrentLocation() {
+export default function getUserLocation() {
   return fetch(ipLookupServiceUri).then(function(response) {
     if (response.status !== 200) {
       throw new Error();

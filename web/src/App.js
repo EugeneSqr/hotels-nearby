@@ -1,7 +1,7 @@
 'use strict';
 import React, {useState, useEffect} from 'react';
 import Map from './Map';
-import getCurrentLocation from './currentLocation';
+import getUserLocation from './userLocation';
 
 export default function App() {
   const centerLocation = useCenterLocation();
@@ -13,8 +13,8 @@ export default function App() {
         return;
       }
 
-      getCurrentLocation().then(function(currentLocation) {
-        setCenterLocation(currentLocation);
+      getUserLocation().then(function(userLocation) {
+        setCenterLocation(userLocation);
       });
     });
 

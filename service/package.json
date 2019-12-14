@@ -4,6 +4,7 @@
   "description": "a service for providing data about hotels nearby",
   "main": "index.js",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "http-errors": "^1.7.3",
     "request": "^2.88.0",
@@ -18,7 +19,7 @@
     "jest": "^24.9.0"
   },
   "scripts": {
-    "start": "nodemon --inspect index.js 0.0.0.0 8081 --delay 2.5",
+    "start": "nodemon index.js 0.0.0.0 8081 --delay 2.5",
     "test": "jest --coverage",
     "lint": "eslint ./*.js --fix"
   },
