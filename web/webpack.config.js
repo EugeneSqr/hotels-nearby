@@ -30,10 +30,12 @@ module.exports = (env, argv) => {
             },
           },
         ]
-      },
-      {
+      }, {
         test: /\.less$/,
         use: ['style-loader', 'css-loader', 'less-loader']
+      }, {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: 'file-loader',
       }]
     },
     optimization: {
