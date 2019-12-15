@@ -1,12 +1,14 @@
 'use strict';
 describe('network service', function() {
-  jest.mock('./apiKeys');
+  jest.mock('./settings');
   jest.mock('request-promise-native');
   const request = require('request-promise-native');
   const networkService = require('./networkService');
-  const getApiKey = require('./apiKeys');
+  const {
+    getRestApiKey,
+  } = require('./settings');
   beforeEach(function() {
-    getApiKey.mockReturnValue('api-key-value');
+    getRestApiKey.mockReturnValue('api-key-value');
     request.mockReset();
   });
 
@@ -25,7 +27,7 @@ describe('network service', function() {
       expect(options).toEqual({
         uri: 'https://places.sit.ls.hereapi.com/places/v1/browse',
         qs: {
-          apiKey: getApiKey(),
+          apiKey: getRestApiKey(),
           in: '10,20;r=2000',
           cat: 'hotel',
           size: 100,

@@ -1,5 +1,7 @@
 'use strict';
-const getRestApiKey = require('./apiKeys');
+const {
+  getRestApiKey,
+} = require('./settings');
 const request = require('request-promise-native');
 const baseUrl = 'https://places.sit.ls.hereapi.com/places/v1';
 const defaultSize = 100;

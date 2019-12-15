@@ -17,8 +17,15 @@ services:
     build: ./service
     environment:
       - HERE_REST_API_KEY
+      - HOTELS_NEARBY_REDIS_HOST=redis
     volumes:
       - ./service:/usr/src/app
       - /usr/src/app/node_modules
     ports:
       - "8081:8081"
+    depends_on:
+        - redis
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
