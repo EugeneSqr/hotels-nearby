@@ -1,6 +1,10 @@
 'use strict';
 const networkService = require('./networkService');
 const cachingService = require('./cachingService');
+const {
+  mapHotels,
+  mapHotelDetails,
+} = require('./networkServiceDataMapper');
 /**
  * Responsible for retrieving and projecting hotels information from network or
  * from cache
@@ -21,36 +25,35 @@ module.exports = {
       }
 
       return networkService.getHotels(latitude, longitude, radius)
-        .then(({results}) => results.items.map(toHotel))
-        .then((hotelList) => cachingService.set(cacheKey, hotelList))
-        .then((hotelList) => Promise.all(hotelList.map(cacheHotel)));
+        .then(mapHotels)
+        .then((hotelList) => cachingService.set(cacheKey, hotelList));
     });
   },
 
-  // TODO: implement me
-  getHotelDetails: function() {
+  /**
+   * Returns hotel details
+   * @param {string} id - hotel id
+   * @param {string} context - location context
+   * @return {Promise<object>}
+   */
+  getHotelDetails: function(id, context) {
+    const cacheKey = buildHotelDetailsKey(id, context);
+    return cachingService.get(cacheKey).then(function(hotelDetails) {
+      if (hotelDetails) {
+        return hotelDetails;
+      }
+
+      return networkService.getHotelDetails(id, context)
+        .then(mapHotelDetails)
+        .then((hotelDetails) => cachingService.set(cacheKey, hotelDetails));
+    });
   },
 };
-
-function toHotel(rawHotel) {
-  return {
-    id: rawHotel.id,
-    name: rawHotel.title,
-    latitude: rawHotel.position[0],
-    longitude: rawHotel.position[1],
-    detailsRef: rawHotel.href,
-  };
-}
-
-function cacheHotel(hotel) {
-  const cacheKey = buildHotelDetailsKey(hotel.id);
-  return cachingService.set(cacheKey, hotel);
-}
 
 function buildHotelListKey(latitude, longitude, radius) {
   return `hotels-${latitude}-${longitude}-${radius}`;
 }
 
-function buildHotelDetailsKey(hotelId) {
-  return `hotel-details-${hotelId}`;
+function buildHotelDetailsKey(id, context) {
+  return `hotel-details-${id}-${context}`;
 }

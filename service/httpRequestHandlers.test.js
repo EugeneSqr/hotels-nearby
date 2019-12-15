@@ -1,17 +1,19 @@
 'use strict';
-describe('httpRequestHandlers', function() {
-  jest.mock('./hotelRepository');
-  const {
-    handleGetHotels,
-  } = require('./httpRequestHandlers');
-  const {
-    BadRequest,
-    InternalServerError,
-  } = require('http-errors');
-  const {
-    getHotels,
-  } = require('./hotelRepository');
+jest.mock('./hotelRepository');
+const {
+  handleGetHotels,
+  handleGetHotelDetails,
+} = require('./httpRequestHandlers');
+const {
+  BadRequest,
+  InternalServerError,
+} = require('http-errors');
+const {
+  getHotels,
+  getHotelDetails,
+} = require('./hotelRepository');
 
+describe('handleGetHotels', function() {
   beforeEach(function() {
     getHotels.mockReset();
   });
@@ -119,10 +121,8 @@ describe('httpRequestHandlers', function() {
   });
 
   test(`rejects with InternalServerError error
-  when hotelRepository fails`, function() {
-    getHotels.mockImplementation(function() {
-      return Promise.reject(new Error());
-    });
+  when hotelRepository unexpectedly fails`, function() {
+    getHotels.mockImplementation(() => Promise.reject(new Error()));
     return expect(handleGetHotels(buildHotelsRequest('0', '0', '100')))
       .rejects.toStrictEqual(new InternalServerError());
   });
@@ -142,12 +142,82 @@ describe('httpRequestHandlers', function() {
       .resolves.toEqual(expectedHotels);
   });
 
+
   function buildHotelsRequest(latitude, longitude, radius) {
     return {
       query: {
         latitude,
         longitude,
         radius,
+      },
+    };
+  }
+});
+
+describe(`handleGetHotelDetails`, function() {
+  beforeEach(function() {
+    getHotelDetails.mockReset();
+  });
+
+  test(`rejects with 'Invalid id'
+  when no request provided`, function() {
+    return expect(handleGetHotelDetails())
+      .rejects.toStrictEqual(new BadRequest('Invalid id'));
+  });
+
+  test(`rejects with 'Bad Request'
+  when no params provided`, function() {
+    return expect(handleGetHotelDetails({}))
+      .rejects.toStrictEqual(new BadRequest('Invalid id'));
+  });
+
+  test(`rejects with 'Bad Request'
+  when no hotel id provided`, function() {
+    return expect(handleGetHotelDetails(buildHotelDetailsRequest('', 'test')))
+      .rejects.toStrictEqual(new BadRequest('Invalid id'));
+  });
+
+  test(`rejects with 'Bad Request'
+  when no query provided`, function() {
+    return expect(handleGetHotelDetails({
+      params: {
+        id: 'id',
+      },
+    })).rejects.toStrictEqual(new BadRequest('Invalid context'));
+  });
+
+  test(`rejects with 'Bad Request'
+  when no location context provided`, function() {
+    return expect(handleGetHotelDetails(buildHotelDetailsRequest('id')))
+      .rejects.toStrictEqual(new BadRequest('Invalid context'));
+  });
+
+  test(`rejects with InternalServerError
+  when hotelRepository unexpectedly fails`, function() {
+    getHotelDetails.mockImplementation(() => Promise.reject(new Error()));
+    return expect(handleGetHotelDetails(buildHotelDetailsRequest('id', 'test')))
+      .rejects.toStrictEqual(new InternalServerError());
+  });
+
+  test(`resolves with hotel details
+  when id and context are valid and repository succeeds`, function() {
+    const expectedDetails = {
+      id: 'id 1',
+      name: 'name 1',
+      phone: 'phone 1',
+    };
+    getHotelDetails.mockReturnValue(Promise.resolve(expectedDetails));
+    return expect(handleGetHotelDetails(buildHotelDetailsRequest('id', 'test')))
+      .resolves.toEqual(expectedDetails);
+  });
+
+  function buildHotelDetailsRequest(id, context) {
+    return {
+      params: {
+        id,
+      },
+      query: {
+        context,
       },
     };
   }

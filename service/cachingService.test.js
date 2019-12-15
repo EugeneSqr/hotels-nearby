@@ -31,12 +31,14 @@ describe('cachingService', function() {
   test(`get resolves
   when redis client get succeeds`, function() {
     const testClient = {
-      get: jest.fn(() => Promise.resolve('expected data')),
+      get: jest.fn(() => Promise.resolve('{"data": "test"}')),
     };
     cachingService.__setClient(testClient);
     return cachingService.get('something').then(function(value) {
       expect(testClient.get).toBeCalledWith('something');
-      expect(value).toEqual('expected data');
+      expect(value).toEqual({
+        data: 'test',
+      });
     });
   });
 

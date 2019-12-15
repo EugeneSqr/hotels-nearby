@@ -13,15 +13,13 @@ describe('network service', function() {
   });
 
   test(`getHotels rejects
-  when underlying request library fails`, function() {
-    request.mockImplementation(function() {
-      return Promise.reject(new Error());
-    });
-
-    expect(networkService.getHotels()).rejects.toEqual(expect.any(Error));
+  when request library fails`, function() {
+    request.mockReturnValue(Promise.reject(new Error('list failure')));
+    return expect(networkService.getHotels())
+      .rejects.toStrictEqual(new Error('list failure'));
   });
 
-  test(`getHotels returns list of hotels
+  test(`getHotels resolves with list of hotels
   from underlying request library`, function() {
     request.mockImplementation(function(options) {
       expect(options).toEqual({
@@ -38,5 +36,28 @@ describe('network service', function() {
     });
     return expect(networkService.getHotels(10, 20, 2000))
       .resolves.toEqual(['hotel1', 'hotel2', 'hotel3']);
+  });
+
+  test(`getHotelDetails rejects
+  when request library fails`, function() {
+    request.mockReturnValue(Promise.reject(new Error('details failure')));
+    return expect(networkService.getHotelDetails())
+      .rejects.toStrictEqual(new Error('details failure'));
+  });
+
+  test(`getHotelDetails resolves with hotel details`, function() {
+    request.mockImplementation(function(options) {
+      expect(options).toEqual({
+        uri: 'https://places.sit.ls.hereapi.com/places/v1/places/' +
+          'id;context=ctx',
+        qs: {
+          apiKey: getRestApiKey(),
+        },
+        json: true,
+      });
+      return Promise.resolve('hotel details');
+    });
+    return expect(networkService.getHotelDetails('id', 'ctx'))
+      .resolves.toEqual('hotel details');
   });
 });

@@ -1,6 +1,6 @@
 'use strict';
 const redis = require('redis');
-const PORT = 6379;
+const redisPortNumber = 6379;
 const {
   getRedisHost,
 } = require('./settings');
@@ -18,18 +18,19 @@ module.exports = {
   /**
    * Gets value from cache
    * @param {string} key
-   * @return {Promise{object}} cached value
+   * @return {Promise<object>} cached value
    */
   get: function(key) {
     return getClient()
-      .then((client) => client.get(key));
+      .then((client) => client.get(key))
+      .then((json) => JSON.parse(json));
   },
 
   /**
    * Sets value to cache with one day expiration
    * @param {string} key
    * @param {object} value
-   * @return {Promise}
+   * @return {Promise<object>}
    */
   set: function(key, value) {
     return getClient()
@@ -49,7 +50,7 @@ function getClient() {
       return resolve(client);
     }
 
-    const cli = redis.createClient(PORT, getRedisHost());
+    const cli = redis.createClient(redisPortNumber, getRedisHost());
     /* istanbul ignore next */
     cli.on('connect', function() {
       cli.get = promisify(cli.get).bind(cli);

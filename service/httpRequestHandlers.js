@@ -8,7 +8,7 @@ const hotelRepository = require('./hotelRepository');
 module.exports = {
   /**
    * Handles hotel list retrieval request
-   * @param {request} request - incomming http request
+   * @param {object} request
    * @return {Promise}
    */
   handleGetHotels: function(request) {
@@ -31,19 +31,34 @@ module.exports = {
 
       const getHotelsPromise = hotelRepository.getHotels(
         roundCoordinate(latitude), roundCoordinate(longitude), radius);
-      return getHotelsPromise.then(function(hotels) {
-        return resolve(hotels);
-      }, function() {
-        return reject(createError(500));
-      });
+      return getHotelsPromise
+        .then(resolve)
+        .catch(() => reject(createError(500)));
     });
   },
 
   /**
    * Handles hotel details request
+   * @param {object} request
    * @return {Promise}
    */
   handleGetHotelDetails: function(request) {
+    return new Promise(function(resolve, reject) {
+      request = request || {};
+      const {id} = request.params || {};
+      if (isValueEmpty(id)) {
+        return reject(createError(400, 'Invalid id'));
+      }
+
+      const {context} = request.query || {};
+      if (isValueEmpty(context)) {
+        return reject(createError(400, 'Invalid context'));
+      }
+
+      hotelRepository.getHotelDetails(id, context)
+        .then(resolve)
+        .catch(() => reject(createError(500)));
+    });
   },
 };
 
@@ -68,5 +83,9 @@ function isRadiusValid(radius) {
 function roundCoordinate(value) {
   /* 4 digits give us around 11 meters precision, which is enough.
    * On the other hand, rounding the values increases cache hit rate */
-  return Math.round((value + Number.EPSILON) * 10000 ) / 10000
+  return Math.round((value + Number.EPSILON) * 10000 ) / 10000;
+}
+
+function isValueEmpty(value) {
+  return !value;
 }

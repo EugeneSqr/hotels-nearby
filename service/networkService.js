@@ -18,27 +18,38 @@ module.exports = {
    * @return {Promise<array<object>>}
    */
   getHotels: function(latitude, longitude, radius) {
-    const options = {
-      uri: `${baseUrl}/browse`,
-      qs: {
-        apiKey: getRestApiKey(),
-        in: buildIn(latitude, longitude, radius),
-        cat: hotelCategory,
-        size: defaultSize,
-      },
-      json: true,
-    };
+    const options = buildOptions(`${baseUrl}/browse`, {
+      apiKey: getRestApiKey(),
+      in: buildIn(latitude, longitude, radius),
+      cat: hotelCategory,
+      size: defaultSize,
+    });
 
     return request(options);
   },
 
   /**
    * Gets details for specific hotel
+   * @param {string} id - hotel id
+   * @param {string} context - location context
+   * @return {Promise<object>}
    */
-  // TODO: implement me
-  getHotelDetails: function(id) {
+  getHotelDetails: function(id, context) {
+    const options = buildOptions(`${baseUrl}/places/${id};context=${context}`, {
+      apiKey: getRestApiKey(),
+    });
+
+    return request(options);
   },
 };
+
+function buildOptions(uri, qs) {
+  return {
+    uri,
+    qs,
+    json: true,
+  };
+}
 
 function buildIn(latitude, longitude, radius) {
   return `${latitude},${longitude};r=${radius}`;
