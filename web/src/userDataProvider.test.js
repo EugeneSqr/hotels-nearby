@@ -1,7 +1,7 @@
 'use strict';
 jest.mock('cross-fetch');
 import fetch from 'cross-fetch';
-import getUserLocation from './userLocation';
+import getUserLocation from './userDataProvider';
 
 describe('currentLocation', function() {
   const defaultLocation = {

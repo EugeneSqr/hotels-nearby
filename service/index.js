@@ -119,13 +119,13 @@ app.get('/hotels', adaptPromiseHandler(handleGetHotels));
  *     parameters:
  *       - name: id
  *         in: path
- *         require: true
+ *         required: true
  *         description: hotel id
  *         schema:
  *           $ref: '#/definitions/id'
  *       - name: context
  *         in: query
- *         require: true
+ *         required: true
  *         description: location context obtained from hotels list request
  *         schema:
  *           $ref: '#/definitions/context'

@@ -9,17 +9,29 @@ import {getHotelsNearbyServiceUrl} from './settings';
  * @return {Promise<Array<object>>}
  */
 export function getHotels(userLocation, areaRadius) {
-  const endpointUrl = `${getHotelsNearbyServiceUrl()}/hotels`;
   const queryString = `?latitude=${userLocation.latitude}&` +
     `longitude=${userLocation.longitude}&` +
     `radius=${areaRadius}`;
-  return fetch(endpointUrl + queryString).then(function(response) {
+  return fetchData(
+    `${getHotelsNearbyServiceUrl()}/hotels`,
+    queryString,
+    []);
+}
+
+export function getHotelDetails(id, context) {
+  return fetchData(
+    `${getHotelsNearbyServiceUrl()}/hotels/${id}`,
+    `?context=${context}`,
+    null);
+}
+
+function fetchData(url, queryString, fallback) {
+  return fetch(url + queryString).then(function(response) {
     if (response.status !== 200) {
       throw new Error();
     }
-
     return response.json();
   }).catch(function() {
-    return [];
+    return fallback;
   });
 }

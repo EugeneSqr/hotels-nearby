@@ -1,30 +1,27 @@
 'use strict';
 import React, {useEffect, useState} from 'react';
-import {getMapApiKey} from './settings';
-import toMapLocation from './mapLocation';
+import {getMapApiKey} from '../settings';
+import toExternalLocation from '../locationConverter';
 import UserLocationMarker from './UserLocationMarker';
 import NearbyHotelMarkers from './NearbyHotelMarkers';
 
-export default function Map({center}) {
+export default React.memo(function Map({center, onHotelSelected}) {
   if (!center) {
     return null;
   }
 
   const mapRef = React.createRef();
-  const style = {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-  };
-
   const map = useMap();
   const location = useLocation();
   useWindowSize();
 
   return (
-    <div ref={mapRef} style={style}>
+    <div id='map' ref={mapRef}>
       <UserLocationMarker location={location} map={map} />
-      <NearbyHotelMarkers userLocation={location} map={map} />
+      <NearbyHotelMarkers
+        userLocation={location}
+        map={map}
+        onHotelSelected={onHotelSelected} />
     </div>
   );
 
@@ -41,7 +38,7 @@ export default function Map({center}) {
           mapRef.current,
           defaultLayers.vector.normal.map, {
             zoom: defaultZoomLevel,
-            center: toMapLocation(center),
+            center: toExternalLocation(center),
           });
         enableMapEvents(newMap);
         setMap(newMap);
@@ -88,7 +85,7 @@ export default function Map({center}) {
       };
     });
   }
-}
+});
 
 function enableMapEvents(map) {
   new window.H.mapevents.Behavior(new window.H.mapevents.MapEvents(map));

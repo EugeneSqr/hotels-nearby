@@ -1,8 +1,6 @@
 'use strict';
-import toMapLocation from './mapLocation';
-import {
-  UserMarker,
-} from './mapObjects';
+import toExternalLocation from '../locationConverter';
+import UserMarker from './userMarker';
 
 export default function UserLocationMarker({location, map}) {
   if (!location || !map) {
@@ -14,7 +12,7 @@ export default function UserLocationMarker({location, map}) {
     map.removeObject(marker);
   }
 
-  map.addObject(new UserMarker(toMapLocation(location)));
+  map.addObject(new UserMarker(toExternalLocation(location)));
   return null;
 }
 

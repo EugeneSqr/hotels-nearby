@@ -2,7 +2,7 @@
 jest.mock('cross-fetch');
 jest.mock('./settings');
 import fetch from 'cross-fetch';
-import {getHotels} from './nearbyHotels';
+import {getHotels, getHotelDetails} from './hotelsDataProvider';
 import {getHotelsNearbyServiceUrl} from './settings';
 
 describe('nearbyHotels', function() {
@@ -49,5 +49,31 @@ describe('nearbyHotels', function() {
       });
     });
     expect(getHotels(location, areaRadius)).resolves.toEqual(expectedHotels);
+  });
+
+  test(`getHotelDetails resolves with null
+  when loading fails`, function() {
+    fetch.mockImplementation(function() {
+      return Promise.reject(new Error());
+    });
+
+    expect(getHotelDetails({})).resolves.toEqual(null);
+  });
+
+  test(`getHotelDetails resolves with hotel details
+  when loading succeeds and return code is 200`, function() {
+    const expectedDetails = 'details';
+    const id = 'test-id';
+    const context = 'test-context';
+    getHotelsNearbyServiceUrl.mockReturnValue('http://localhost:8081');
+    fetch.mockImplementation(function(url) {
+      expect(url).toEqual(
+        `http://localhost:8081/hotels/${id}?context=${context}`);
+      return Promise.resolve({
+        status: 200,
+        json: jest.fn(() => Promise.resolve(expectedDetails)),
+      });
+    });
+    expect(getHotelDetails(id, context)).resolves.toEqual(expectedDetails);
   });
 });

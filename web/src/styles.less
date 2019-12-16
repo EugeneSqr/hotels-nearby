@@ -1,4 +1,60 @@
+@details-z: 10;
+@details-width: 20rem;
+@details-padding: 0.5rem;
+@details-margin: @details-padding;
+@details-background: #ffffff;
+
+@details-main-color: #000000;
+@details-secondary-color: #58595b;
+
+@details-font-normal: Arial;
+@details-font-narrow: Arial Narrow;
+
+@details-font-smaller: 0.9rem;
+@details-font-larger: 1.2rem;
+
 body {
   padding: 0px;
   margin: 0px;
+}
+
+#map {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+#hotel-details-panel {
+  font-family: @details-font-normal;
+  width: @details-width;
+  position: absolute;
+  padding: @details-padding;
+  margin: @details-margin;
+  background: @details-background;
+  color: @details-main-color;
+  overflow: hidden;
+  box-shadow: 0.12rem 0.12rem 0.15rem 0.12rem rgba(0, 0, 0, 0.3);
+  z-index: @details-z;
+  .name {
+    font-size: @details-font-larger;
+    margin-bottom: @details-margin;
+  }
+  .address {
+    margin-bottom: @details-margin*2;
+    font-family: @details-font-narrow;
+    color: @details-secondary-color;
+  }
+  .contact {
+    font-size: @details-font-smaller;
+    margin-bottom: 0;
+    margin-top: @details-margin*1.25;
+    .label {
+      color: @details-secondary-color;
+      float: left;
+      width: @details-width/3;
+    }
+    .value {
+      overflow: hidden;
+    }
+  }
 }
