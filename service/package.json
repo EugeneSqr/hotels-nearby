@@ -24,6 +24,9 @@
     "test": "jest --coverage",
     "lint": "eslint ./*.js --fix"
   },
+  "engines": {
+    "node": "10.x"
+  },
   "author": "eugenesqr",
   "license": "GPL-3.0-or-later"
 }

@@ -17,7 +17,7 @@ services:
     build: ./service
     environment:
       - HERE_REST_API_KEY
-      - HOTELS_NEARBY_REDIS_HOST=redis
+      - REDIS_URL=redis://redis:6379
     volumes:
       - ./service:/usr/src/app
       - /usr/src/app/node_modules

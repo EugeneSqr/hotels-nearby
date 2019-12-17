@@ -19,12 +19,12 @@ useDocsMiddleware(app, '/api-docs');
  *     type: number
  *     minimum: -90
  *     maximum: 90
- *     example: 10.5
+ *     example: 47.20944
  *   longitude:
  *     type: number
  *     minimum: -180
  *     maximum: 180
- *     example: 20.33
+ *     example: -1.58257
  *   radius:
  *     type: number
  *     minimum: 50

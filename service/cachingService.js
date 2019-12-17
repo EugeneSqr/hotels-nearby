@@ -1,8 +1,7 @@
 'use strict';
 const redis = require('redis');
-const redisPortNumber = 6379;
 const {
-  getRedisHost,
+  getRedisUrl,
 } = require('./settings');
 const {
   promisify,
@@ -50,7 +49,7 @@ function getClient() {
       return resolve(client);
     }
 
-    const cli = redis.createClient(redisPortNumber, getRedisHost());
+    const cli = redis.createClient(getRedisUrl());
     /* istanbul ignore next */
     cli.on('connect', function() {
       cli.get = promisify(cli.get).bind(cli);

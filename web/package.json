@@ -4,11 +4,12 @@
   "description": "a web app displaying hotels nearby",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode development",
+    "build": "webpack --mode production",
     "start": "webpack-dev-server --mode development --host 0.0.0.0 --port 8080",
     "startprod": "serve ./dist",
     "lint": "eslint ./src --fix",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "postinstall": "npm run build"
   },
   "author": "eugenesqr",
   "license": "GPL-3.0-or-later",
