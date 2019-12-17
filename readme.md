@@ -3,7 +3,7 @@ The project can be used to show hotels near you on a map. When project webpage i
 
 ### Setup development environment
 1. Make sure docker (19.03.5) and docker-compose (1.25.0) are up and running.
-2. Make a copy of the .env_exmple file located in the root directory of the repository; place it into the same forlder and name it '.env'.
+2. Make a copy of the .env_example file located in the root directory of the repository; place it into the same forlder and name it '.env'.
 3. Fill in all the missing data:
   - HERE_JS_API_KEY - your JS api key obtained at https://developers.here.com. This key is used to display all the map related data
   - HERE_REST_API_KEY - your REST api key obtained at https://developers.here.com. This key is uses to search for hotels and get hotel details.
