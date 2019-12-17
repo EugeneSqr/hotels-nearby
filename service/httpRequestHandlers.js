@@ -33,7 +33,7 @@ module.exports = {
         roundCoordinate(latitude), roundCoordinate(longitude), radius);
       return getHotelsPromise
         .then(resolve)
-        .catch(() => reject(createError(500)));
+        .catch((error) => reject(createError(500)));
     });
   },
 

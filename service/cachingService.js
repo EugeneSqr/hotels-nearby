@@ -3,9 +3,6 @@ const redis = require('redis');
 const {
   getRedisUrl,
 } = require('./settings');
-const {
-  promisify,
-} = require('util');
 const expirationSec = 60 * 60 * 24;
 
 let client;
@@ -21,7 +18,7 @@ module.exports = {
    */
   get: function(key) {
     return getClient()
-      .then((client) => client.get(key))
+      .then((client) => clientGet(client, key))
       .then((json) => JSON.parse(json));
   },
 
@@ -33,7 +30,8 @@ module.exports = {
    */
   set: function(key, value) {
     return getClient()
-      .then((client) => client.setex(key, expirationSec, JSON.stringify(value)))
+      .then((client) => clientSetex(
+        client, key, expirationSec, JSON.stringify(value)))
       .then(() => value);
   },
 
@@ -52,12 +50,34 @@ function getClient() {
     const cli = redis.createClient(getRedisUrl());
     /* istanbul ignore next */
     cli.on('connect', function() {
-      cli.get = promisify(cli.get).bind(cli);
-      cli.setex = promisify(cli.setex).bind(cli);
       client = cli;
       return resolve(client);
     });
     /* istanbul ignore next */
     cli.on('error', reject);
+  });
+}
+
+function clientGet(client, key) {
+  return new Promise(function(resolve, reject) {
+    client.get(key, function(error, response) {
+      if (error) {
+        return reject(error);
+      }
+
+      return resolve(response);
+    });
+  });
+}
+
+function clientSetex(client, key, expiration, value) {
+  return new Promise(function(resolve, reject) {
+    client.setex(key, expiration, value, function(error, response) {
+      if (error) {
+        return reject(error);
+      }
+
+      return resolve(value);
+    });
   });
 }
